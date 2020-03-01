@@ -1,0 +1,29 @@
+{
+  "name": "dependent-ts",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicu-chiciuc/dependent-ts.git"
+  },
+  "keywords": [],
+  "author": "Nicusor Chiciuc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicu-chiciuc/dependent-ts/issues"
+  },
+  "homepage": "https://github.com/nicu-chiciuc/dependent-ts#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
+    "eslint": "^6.8.0",
+    "patch-package": "^6.2.1",
+    "typescript": "^3.8.3"
+  }
+}

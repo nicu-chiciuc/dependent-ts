@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "target": "es5",
+    "outDir": "./lib",
+    "moduleResolution": "node",
+    "lib": ["es2015"],
+    "rootDir": "./",
+
+    "declaration": true,
+    "resolveJsonModule": true,
+
+    /* Strict checks */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+
+    /* Additional Checks */
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "**.test.*"]
+}
