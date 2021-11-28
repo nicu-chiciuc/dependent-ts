@@ -1,9 +1,9 @@
 {
   "name": "dependent-ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
-  "main": "src/index.ts",
-  "types": "types",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest",
     "build": "tsc"
