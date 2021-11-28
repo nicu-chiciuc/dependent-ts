@@ -8,6 +8,24 @@ export type UnpackPromise<T> = T extends Promise<infer U> ? U : T;
  */
 export type EmptyObject = Record<string, unknown>;
 
+export type Arguments<T extends (...args: unknown[]) => unknown> = T extends (...args: infer R) => unknown ? R : never;
+export type FirstArgument<T extends (arg: any, ...args: any[]) => any> = T extends (val: infer R, ...args: any[]) => any
+  ? R
+  : never;
+export type SecondArgument<T extends (first: any, second: any, ...args: any[]) => any> = T extends (
+  first: any,
+  second: infer R,
+  ...args: any[]
+) => any
+  ? R
+  : never;
+
+/**
+ * Given a function of type `(v: A) => Ap | (v: B) => Bp`
+ * transform it's type into `(v: A | B) => Ap | Bp`
+ */
+export type UnionFuncFix<F extends (arg: any) => any> = (value: FirstArgument<F>) => ReturnType<F>;
+
 // https://www.roryba.in/programming/2019/10/12/flattening-typescript-union-types.html
 // Flattens two union types into a single type with optional values
 // i.e. FlattenUnion<{ a: number, c: number } | { b: string, c: number }> = { a?: number, b?: string, c: number }
@@ -91,6 +109,13 @@ export function excactly<T>(length: number, arr: T[]): arr is T[] {
   return arr.length === length;
 }
 
+/**
+ * Type guard that returns true if the value is not null or undefined
+ *
+ * The main usage is the filter function: `something.filter(notEmpty)`
+ *
+ * @param value A value that may or may not be null/undefined
+ */
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
 }
@@ -156,7 +181,102 @@ export function zip<T, B>(arrT: Array1<T>, arrB: Array1<B>): Array1<[T, B]> {
 export function last<T>(arr: Array1<T>): T;
 export function last<T>(arr: T[]): T | undefined;
 export function last<T>(arr: T[]): T | undefined {
-  const last: T = arr[arr.length - 1]!;
+  return arr[arr.length - 1];
+}
 
-  return last;
+/**
+ * Filter the values of an array in 2 groups based on the predicate
+ *
+ * @param arr Array with some values
+ * @param pred The predicate
+ */
+export function split<T>(arr: T[], pred: (elem: T, index: number) => boolean): { good: T[]; bad: T[] } {
+  const good = arr.filter((elem, index) => pred(elem, index));
+  const bad = arr.filter((elem, index) => !pred(elem, index));
+
+  return { good, bad };
+}
+
+/**
+ * Wrapper over `Promise.all()` that maintains the guarantees of the passed array
+ *
+ * @param promises A list of promises
+ */
+export function promiseAll<T>(promises: Array3<Promise<T>>): Promise<Array3<T>>;
+export function promiseAll<T>(promises: Array2<Promise<T>>): Promise<Array2<T>>;
+export function promiseAll<T>(promises: Array1<Promise<T>>): Promise<Array1<T>>;
+export function promiseAll<T>(promises: Promise<T>[]): Promise<T[]>;
+export function promiseAll<T>(promises: Promise<T>[]): Promise<T[]> {
+  return Promise.all(promises);
+}
+
+/**
+ * Wrapper over `Promise.all(array.map(callback))` that maintains the guarantees of the array
+ */
+export function mapAll<T, B>(arr: Array3<T>, callback: (value: T, index: number) => Promise<B>): Promise<Array3<B>>;
+export function mapAll<T, B>(arr: Array2<T>, callback: (value: T, index: number) => Promise<B>): Promise<Array2<B>>;
+export function mapAll<T, B>(arr: Array1<T>, callback: (value: T, index: number) => Promise<B>): Promise<Array1<B>>;
+export function mapAll<T, B>(arr: T[], callback: (value: T, index: number) => Promise<B>): Promise<B[]>;
+export function mapAll<T, B>(arr: T[], callback: (value: T, index: number) => Promise<B>): Promise<B[]> {
+  return Promise.all(arr.map(callback));
+}
+
+/**
+ * Reverses an array (creates a new array) maintaining its guarantees
+ *
+ * @param arr The array to reverse
+ */
+export function reverse<T>(arr: Array3<T>): Array3<T>;
+export function reverse<T>(arr: Array2<T>): Array2<T>;
+export function reverse<T>(arr: Array1<T>): Array1<T>;
+export function reverse<T>(arr: Array1<T>): Array1<T>;
+export function reverse<T>(arr: T[]): T[] {
+  const tempArr = [...arr];
+
+  tempArr.reverse();
+
+  return tempArr;
+}
+
+/**
+ * Wrapper around `splice` that doesn't modify the initial array
+ *
+ * @param array
+ * @param start
+ * @param count
+ * @param values
+ */
+export function immutableSplice<T>(array: T[], start: number, count: number, ...values: T[]): T[] {
+  const newArr = [...array];
+  newArr.splice(start, count, ...values);
+  return newArr;
+}
+
+/**
+ * Wrapper around `Object.keys` that returns a typed array instead of `string[]`
+ *
+ * @param value
+ */
+export function objKeys<T>(value: T): (keyof T)[] {
+  return Object.keys(value) as (keyof T)[];
+}
+
+/**
+ * This function can be added in the default case of a switch statement
+ * so that the switch is exhaustive (https://stackoverflow.com/a/39419171)
+ * When this is added typescript will show an error if one of the possibilities
+ * of an enum was not taken into account. See Compose.js setContent() for example
+ */
+export function unreachable(v: never): never {
+  return v;
+}
+
+export function promiseTimeout(millis: number) {
+  return new Promise<undefined>((resolve, reject) => {
+    try {
+      setTimeout(resolve, millis);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
