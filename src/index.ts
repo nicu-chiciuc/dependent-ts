@@ -1,39 +1,97 @@
-export type Array1<T> = [T, ...T[]];
+// https://stackoverflow.com/a/50375286/2659549
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
-export function map<T, U>(
-  arr: [T, ...T[]],
-  callbackfn: (value: T, index: number) => U,
-): [U, ...U[]];
-export function map<T, U>(
-  arr: [T, T, ...T[]],
-  callbackfn: (value: T, index: number) => U,
-): [U, U, ...U[]];
-export function map<T, U>(
-  arr: T[],
-  callbackfn: (value: T, index: number) => U,
-): U[] {
+export type UnpackPromise<T> = T extends Promise<infer U> ? U : T;
+
+/**
+ * Use this instead of {}. It seems that {} causes problems especially when used in generics.
+ */
+export type EmptyObject = Record<string, unknown>;
+
+// https://www.roryba.in/programming/2019/10/12/flattening-typescript-union-types.html
+// Flattens two union types into a single type with optional values
+// i.e. FlattenUnion<{ a: number, c: number } | { b: string, c: number }> = { a?: number, b?: string, c: number }
+export type FlattenUnion<T> = {
+  [K in keyof UnionToIntersection<T>]: K extends keyof T
+    ? T[K] extends unknown[]
+      ? T[K]
+      : // eslint-disable-next-line @typescript-eslint/ban-types
+      T[K] extends object
+      ? FlattenUnion<T[K]>
+      : T[K]
+    : UnionToIntersection<T>[K] | undefined;
+};
+
+/**
+ * Different implementation of Array1/Array2/...
+ *
+ * Not sure if it provides any advantages
+ */
+export type ArrayN<N extends number, T> = N extends 1
+  ? [T, ...T[]]
+  : N extends 2
+  ? [T, T, ...T[]]
+  : N extends 3
+  ? [T, T, T, ...T[]]
+  : N extends 4
+  ? [T, T, T, T, ...T[]]
+  : N extends 5
+  ? [T, T, T, T, T, ...T[]]
+  : N extends 6
+  ? [T, T, T, T, T, T, ...T[]]
+  : N extends 7
+  ? [T, T, T, T, T, T, T, ...T[]]
+  : T[];
+
+export type Array1<T> = [T, ...T[]];
+export type Array2<T> = [T, T, ...T[]];
+export type Array3<T> = [T, T, T, ...T[]];
+export type Array4<T> = [T, T, T, T, ...T[]];
+export type Array5<T> = [T, T, T, T, T, ...T[]];
+export type Array6<T> = [T, T, T, T, T, T, ...T[]];
+export type Array7<T> = [T, T, T, T, T, T, T, ...T[]];
+
+export function map<T, U>(arr: Array1<T>, callbackfn: (value: T, index: number) => U): Array1<U>;
+export function map<T, U>(arr: Array2<T>, callbackfn: (value: T, index: number) => U): Array2<U>;
+export function map<T, U>(arr: T[], callbackfn: (value: T, index: number) => U): U[];
+export function map<T, U>(arr: T[], callbackfn: (value: T, index: number) => U): U[] {
   return arr.map(callbackfn);
 }
 
-export function hasAtLeast<T>(n: 1, arr: T[]): arr is [T, ...T[]];
-export function hasAtLeast<T>(n: 2, arr: T[]): arr is [T, T, ...T[]];
-export function hasAtLeast<T>(n: 3, arr: T[]): arr is [T, T, T, ...T[]];
-export function hasAtLeast<T>(n: number, arr: T[]): arr is T[];
-export function hasAtLeast<T>(n: number, arr: T[]): arr is T[] {
+export function atLeast<T>(n: 1, arr: T[]): arr is Array1<T>;
+export function atLeast<T>(n: 2, arr: T[]): arr is Array2<T>;
+export function atLeast<T>(n: 3, arr: T[]): arr is Array3<T>;
+export function atLeast<T>(n: number, arr: T[]): arr is T[] {
   return arr.length >= n;
 }
 
-export function hasExactly<T>(n: 1, arr: T[]): arr is [T];
-export function hasExactly<T>(n: 2, arr: T[]): arr is [T, T];
-export function hasExactly<T>(n: 3, arr: T[]): arr is [T, T, T];
-export function hasExactly<T>(n: number, arr: T[]): arr is T[];
-export function hasExactly<T>(n: number, arr: T[]): arr is T[] {
-  return arr.length === n;
+/**
+ * Wrapper around the `in` operator.
+ * By default the `in` operator narrows the object (this is useful if the object
+ * is a union type). We want to do the reverse, that is narrow down the key.
+ * https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-in-operator-narrowing
+ *
+ * @param obj The object the keys of which we want to narrow to
+ * @param key The key we want to check if is in the object
+ */
+export function isKeyOf<T>(obj: T, key: string | number | symbol): key is keyof T {
+  return key in obj;
 }
 
-export function notEmpty<TValue>(
-  value: TValue | null | undefined,
-): value is TValue {
+/**
+ * Type guard that returns true if the passed array has the exact length as specified
+ *
+ * @param length The expected length of the array
+ * @param arr The array the length of which we test
+ */
+export function excactly<T>(length: 1, arr: T[]): arr is [T];
+export function excactly<T>(length: 2, arr: T[]): arr is [T, T];
+export function excactly<T>(length: 3, arr: T[]): arr is [T, T, T];
+export function excactly<T>(length: number, arr: T[]): arr is T[] {
+  return arr.length === length;
+}
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
 }
 
@@ -47,18 +105,18 @@ export function atMod<T>(arr: Array1<T>, indexMod: number): T {
 // TODO: Write this better
 export function groupBy<T extends {}, K extends string>(
   arr: (T & { [k in K]?: string })[],
-  key: K,
+  key: K
 ): { [k: string]: Array1<T> } {
   const retObj: { [k: string]: Array1<T> } = {};
 
-  arr.forEach(elem => {
+  arr.forEach((elem) => {
     if (!(key in elem)) return;
 
     const elemVal: string | undefined = elem[key];
 
     if (!elemVal) return;
 
-    if (elemVal in retObj) {
+    if (isKeyOf(retObj, elemVal)) {
       retObj[elemVal].push(elem);
     } else {
       retObj[elemVal] = [elem];
@@ -69,10 +127,7 @@ export function groupBy<T extends {}, K extends string>(
 }
 
 // Maybe rewrite this more beautifully
-export function zip<T, B>(
-  arrT: [T, ...T[]],
-  arrB: [B, ...B[]],
-): [[T, B], ...[T, B][]] {
+export function zip<T, B>(arrT: Array1<T>, arrB: Array1<B>): Array1<[T, B]> {
   const first: [T, B] = [arrT[0], arrB[0]];
 
   const rest = map(arrT, (tVal, index) => {
@@ -91,7 +146,16 @@ export function zip<T, B>(
   return [first, ...rest];
 }
 
-export function lastElem<T>(arr: [T, ...T[]]): T {
+/**
+ * Returns the last element of the array
+ * If the array is Array1, it will return `T`
+ * otherwise it will return `T | undefined`
+ *
+ * @param arr An array of elements
+ */
+export function last<T>(arr: Array1<T>): T;
+export function last<T>(arr: T[]): T | undefined;
+export function last<T>(arr: T[]): T | undefined {
   const last: T = arr[arr.length - 1]!;
 
   return last;
