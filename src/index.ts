@@ -103,28 +103,28 @@ export function atMod<T>(arr: Array1<T>, indexMod: number): T {
 }
 
 // TODO: Write this better
-export function groupBy<T extends {}, K extends string>(
-  arr: (T & { [k in K]?: string })[],
-  key: K
-): { [k: string]: Array1<T> } {
-  const retObj: { [k: string]: Array1<T> } = {};
-
-  arr.forEach((elem) => {
-    if (!(key in elem)) return;
-
-    const elemVal: string | undefined = elem[key];
-
-    if (!elemVal) return;
-
-    if (isKeyOf(retObj, elemVal)) {
-      retObj[elemVal].push(elem);
-    } else {
-      retObj[elemVal] = [elem];
-    }
-  });
-
-  return retObj;
-}
+// export function groupBy<T extends {}, K extends string>(
+//   arr: (T & { [k in K]?: string })[],
+//   key: K
+// ): { [k: string]: Array1<T> } {
+//   const retObj: { [k: string]: Array1<T> } = {};
+//
+//   arr.forEach((elem) => {
+//     if (!(key in elem)) return;
+//
+//     const elemVal: string | undefined = elem[key];
+//
+//     if (!elemVal) return;
+//
+//     if (isKeyOf(retObj, elemVal)) {
+//       retObj[elemVal].push(elem);
+//     } else {
+//       retObj[elemVal] = [elem];
+//     }
+//   });
+//
+//   return retObj;
+// }
 
 // Maybe rewrite this more beautifully
 export function zip<T, B>(arrT: Array1<T>, arrB: Array1<B>): Array1<[T, B]> {
