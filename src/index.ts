@@ -280,3 +280,15 @@ export function promiseTimeout(millis: number) {
     }
   });
 }
+
+/**
+ * Wrapper around `Array.includes()` that is also a type guard and doesn't err if the value
+ * is not guaranteed to be in the given array
+ *
+ * @param arr
+ * @param value
+ */
+export function includes<T>(arr: T[], value: unknown): value is T {
+  // @ts-ignore
+  return arr.includes(value);
+}

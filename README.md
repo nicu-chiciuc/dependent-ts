@@ -13,6 +13,9 @@ average([]); // This will show an error
 average([1, 2]) // This will work as expected
 ```
 
+## Live example
+Check this codesandbox and hover over the variables: https://codesandbox.io/s/github/nicu-chiciuc/dependent-ts-examples?file=/index.ts
+
 ## Some youtube videos
 You can check the videos in this series to see how this library can be used
 * https://youtu.be/ol3f5DSON6I

@@ -1,12 +1,14 @@
 {
   "name": "dependent-ts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "dtslint": "dtslint tests/index.test.ts",
+    "prepublishOnly": "tsc"
   },
   "tsd": {
     "directory": "./src"
@@ -26,6 +28,7 @@
     "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^2.21.0",
     "@typescript-eslint/parser": "^2.21.0",
+    "dtslint": "^4.2.1",
     "eslint": "^6.8.0",
     "jest": "^27.3.1",
     "patch-package": "^6.2.1",
