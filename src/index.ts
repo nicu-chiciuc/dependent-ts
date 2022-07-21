@@ -258,7 +258,8 @@ export function immutableSplice<T>(array: T[], start: number, count: number, ...
  * @param value
  */
 export function objKeys<T>(value: T): (keyof T)[] {
-  return Object.keys(value) as (keyof T)[];
+  // @ts-expect-error This is expected
+  return Object.keys(value) 
 }
 
 /**
@@ -292,3 +293,100 @@ export function includes<T>(arr: T[], value: unknown): value is T {
   // @ts-ignore
   return arr.includes(value);
 }
+
+
+
+/////////////
+type Range1 = 1
+type Range2 = 1 | 2
+type Range3 = 1 | 2 | 3
+type Range4 = 1 | 2 | 3 | 4
+type Range5 = 1 | 2 | 3 | 4 | 5
+type Range6 = 1 | 2 | 3 | 4 | 5 | 6
+type Range7 = 1 | 2 | 3 | 4 | 5 | 6 | 7
+type Range8 = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+
+
+function isRangeUntil(until: 1, num: number): num is 1
+function isRangeUntil(until: 2, num: number): num is 1 | 2
+function isRangeUntil(until: 3, num: number): num is 1 | 2 | 3
+function isRangeUntil(until: 4, num: number): num is 1 | 2 | 3 | 4
+function isRangeUntil(until: 5, num: number): num is 1 | 2 | 3 | 4 | 5
+function isRangeUntil(until: 6, num: number): num is 1 | 2 | 3 | 4 | 5 | 6
+function isRangeUntil(until: 7, num: number): num is 1 | 2 | 3 | 4 | 5 | 6 | 7
+function isRangeUntil(until: 8, num: number): num is 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+function isRangeUntil(until: number, num: number): boolean {
+  return num >= 1 && num <= until
+}
+
+function getNum():number {
+  return 8 
+}
+
+const data = getNum()
+
+type MyObj = {
+  [K in Range7 as `day${K}`]: string
+} & {
+
+  name: 'Valera' | 'Nicu';
+}
+
+
+function test(): MyObj {
+  // @ts-expect-error
+  return {}
+}
+
+let tttt = test();
+
+
+const obj = {
+  // write something
+  name: 'Valera',
+  day1: 'Monday',
+  day2: 'Tuesday',
+}
+
+Object.keys(obj).forEach(key => {
+   const data = obj[key];
+})
+
+objKeys(obj).forEach(key => {
+   const data = obj[key];
+})
+
+const arr: string[] = [1, 2, 3]
+
+getUserIds([])
+getUserIds(['asdf'])
+
+if (atLeast(1, arr))
+    getUserIds(arr)
+
+function getUserIds(ids: Array1<string>) {
+  console.log(ids);
+}
+
+if (isRangeUntil(2, data)) {
+  const asdf = `day${data}` as const
+
+  tttt[`day${data}`] = 'asdf';
+}
+
+
+
+
+type MAXIMUM_ALLOWED_BOUNDARY = 999
+
+type ComputeRange<
+    N extends number,
+    Result extends Array<unknown> = [],
+    > =
+    (Result['length'] extends N
+        ? Result
+        : ComputeRange<N, [...Result, Result['length']]>
+    )
+
+
+type Test = ComputeRange<999>
