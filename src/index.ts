@@ -1,7 +1,9 @@
+export * from './object';
+
 // https://stackoverflow.com/a/50375286/2659549
-export type UnionToIntersection<U> = (U extends any
-? (k: U) => void
-: never) extends (k: infer I) => void
+export type UnionToIntersection<U> = (
+  U extends any ? (k: U) => void : never
+) extends (k: infer I) => void
   ? I
   : never;
 
@@ -17,9 +19,8 @@ export type Arguments<T extends (...args: unknown[]) => unknown> = T extends (
 ) => unknown
   ? R
   : never;
-export type FirstArgument<
-  T extends (arg: any, ...args: any[]) => any
-> = T extends (val: infer R, ...args: any[]) => any ? R : never;
+export type FirstArgument<T extends (arg: any, ...args: any[]) => any> =
+  T extends (val: infer R, ...args: any[]) => any ? R : never;
 export type SecondArgument<
   T extends (first: any, second: any, ...args: any[]) => any
 > = T extends (first: any, second: infer R, ...args: any[]) => any ? R : never;
@@ -295,16 +296,6 @@ export function immutableSplice<T>(
   const newArr = [...array];
   newArr.splice(start, count, ...values);
   return newArr;
-}
-
-/**
- * Wrapper around `Object.keys` that returns a typed array instead of `string[]`
- *
- * @param value
- */
-export function objKeys<T>(value: T): (keyof T)[] {
-  // @ts-expect-error This is expected
-  return Object.keys(value);
 }
 
 /**

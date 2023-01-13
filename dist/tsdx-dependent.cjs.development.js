@@ -2,6 +2,18 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+/**
+ * Wrapper around `Object.keys` that returns a typed array instead of `string[]`
+ *
+ * @param value
+ */
+function objKeys(value) {
+  return Object.keys(value);
+}
+function objEntries(value) {
+  return Object.entries(value);
+}
+
 function map(arr, callbackfn) {
   return arr.map(callbackfn);
 }
@@ -123,15 +135,6 @@ function immutableSplice(array, start, count) {
   return newArr;
 }
 /**
- * Wrapper around `Object.keys` that returns a typed array instead of `string[]`
- *
- * @param value
- */
-function objKeys(value) {
-  // @ts-expect-error This is expected
-  return Object.keys(value);
-}
-/**
  * This function can be added in the default case of a switch statement
  * so that the switch is exhaustive (https://stackoverflow.com/a/39419171)
  * When this is added typescript will show an error if one of the possibilities
@@ -171,6 +174,7 @@ exports.last = last;
 exports.map = map;
 exports.mapAll = mapAll;
 exports.notEmpty = notEmpty;
+exports.objEntries = objEntries;
 exports.objKeys = objKeys;
 exports.promiseAll = promiseAll;
 exports.promiseTimeout = promiseTimeout;

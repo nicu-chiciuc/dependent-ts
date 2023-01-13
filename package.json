@@ -26,8 +26,8 @@
     }
   },
   "prettier": {
-    "printWidth": 80,
-    "semi": true,
+    "printWidth": 100,
+    "semi": false,
     "singleQuote": true,
     "trailingComma": "es5"
   },
@@ -49,6 +49,7 @@
     "husky": "^8.0.3",
     "prettier": "^2.8.2",
     "size-limit": "^8.1.1",
+    "tsd": "^0.25.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.4.1",
     "typescript": "^4.9.4"

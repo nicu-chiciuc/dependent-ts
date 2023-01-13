@@ -1,3 +1,4 @@
+export * from './object';
 export declare type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 export declare type UnpackPromise<T> = T extends Promise<infer U> ? U : T;
 /**
@@ -116,12 +117,6 @@ export declare function reverse<T>(arr: Array1<T>): Array1<T>;
  * @param values
  */
 export declare function immutableSplice<T>(array: T[], start: number, count: number, ...values: T[]): T[];
-/**
- * Wrapper around `Object.keys` that returns a typed array instead of `string[]`
- *
- * @param value
- */
-export declare function objKeys<T>(value: T): (keyof T)[];
 /**
  * This function can be added in the default case of a switch statement
  * so that the switch is exhaustive (https://stackoverflow.com/a/39419171)

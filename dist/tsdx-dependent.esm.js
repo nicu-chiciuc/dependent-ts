@@ -1,3 +1,15 @@
+/**
+ * Wrapper around `Object.keys` that returns a typed array instead of `string[]`
+ *
+ * @param value
+ */
+function objKeys(value) {
+  return Object.keys(value);
+}
+function objEntries(value) {
+  return Object.entries(value);
+}
+
 function map(arr, callbackfn) {
   return arr.map(callbackfn);
 }
@@ -119,15 +131,6 @@ function immutableSplice(array, start, count) {
   return newArr;
 }
 /**
- * Wrapper around `Object.keys` that returns a typed array instead of `string[]`
- *
- * @param value
- */
-function objKeys(value) {
-  // @ts-expect-error This is expected
-  return Object.keys(value);
-}
-/**
  * This function can be added in the default case of a switch statement
  * so that the switch is exhaustive (https://stackoverflow.com/a/39419171)
  * When this is added typescript will show an error if one of the possibilities
@@ -157,5 +160,5 @@ function includes(arr, value) {
   return arr.includes(value);
 }
 
-export { atLeast, atMod, excactly, immutableSplice, includes, isKeyOf, last, map, mapAll, notEmpty, objKeys, promiseAll, promiseTimeout, reverse, split, unreachable, zip };
+export { atLeast, atMod, excactly, immutableSplice, includes, isKeyOf, last, map, mapAll, notEmpty, objEntries, objKeys, promiseAll, promiseTimeout, reverse, split, unreachable, zip };
 //# sourceMappingURL=tsdx-dependent.esm.js.map
