@@ -1,40 +1,56 @@
 {
-  "name": "dependent-ts",
-  "version": "0.0.4",
-  "description": "",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
-    "test": "jest",
-    "build": "tsc",
-    "dtslint": "dtslint tests/index.test.ts",
-    "prepublishOnly": "tsc"
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
   },
-  "tsd": {
-    "directory": "./src"
+  "peerDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nicu-chiciuc/dependent-ts.git"
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
-  "keywords": [],
-  "author": "Nicusor Chiciuc",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nicu-chiciuc/dependent-ts/issues"
-  },
-  "homepage": "https://github.com/nicu-chiciuc/dependent-ts#readme",
+  "name": "tsdx-dependent",
+  "author": "Nicu Chiciuc",
+  "module": "dist/tsdx-dependent.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/tsdx-dependent.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/tsdx-dependent.esm.js",
+      "limit": "10 KB"
+    }
+  ],
   "devDependencies": {
-    "@types/jest": "^27.0.3",
-    "@typescript-eslint/eslint-plugin": "^2.21.0",
-    "@typescript-eslint/parser": "^2.21.0",
-    "dtslint": "^4.2.1",
-    "eslint": "^6.8.0",
-    "jest": "^27.3.1",
-    "patch-package": "^6.2.1",
-    "prettier": "^2.4.1",
-    "ts-jest": "^27.0.7",
-    "tsd": "^0.19.0",
-    "typescript": "^4.7.4"
+    "@size-limit/preset-small-lib": "^8.1.1",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.2",
+    "size-limit": "^8.1.1",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.4"
   }
 }

@@ -1,5 +1,9 @@
 // https://stackoverflow.com/a/50375286/2659549
-export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+export type UnionToIntersection<U> = (U extends any
+? (k: U) => void
+: never) extends (k: infer I) => void
+  ? I
+  : never;
 
 export type UnpackPromise<T> = T extends Promise<infer U> ? U : T;
 
@@ -8,23 +12,25 @@ export type UnpackPromise<T> = T extends Promise<infer U> ? U : T;
  */
 export type EmptyObject = Record<string, unknown>;
 
-export type Arguments<T extends (...args: unknown[]) => unknown> = T extends (...args: infer R) => unknown ? R : never;
-export type FirstArgument<T extends (arg: any, ...args: any[]) => any> = T extends (val: infer R, ...args: any[]) => any
+export type Arguments<T extends (...args: unknown[]) => unknown> = T extends (
+  ...args: infer R
+) => unknown
   ? R
   : never;
-export type SecondArgument<T extends (first: any, second: any, ...args: any[]) => any> = T extends (
-  first: any,
-  second: infer R,
-  ...args: any[]
-) => any
-  ? R
-  : never;
+export type FirstArgument<
+  T extends (arg: any, ...args: any[]) => any
+> = T extends (val: infer R, ...args: any[]) => any ? R : never;
+export type SecondArgument<
+  T extends (first: any, second: any, ...args: any[]) => any
+> = T extends (first: any, second: infer R, ...args: any[]) => any ? R : never;
 
 /**
  * Given a function of type `(v: A) => Ap | (v: B) => Bp`
  * transform it's type into `(v: A | B) => Ap | Bp`
  */
-export type UnionFuncFix<F extends (arg: any) => any> = (value: FirstArgument<F>) => ReturnType<F>;
+export type UnionFuncFix<F extends (arg: any) => any> = (
+  value: FirstArgument<F>
+) => ReturnType<F>;
 
 // https://www.roryba.in/programming/2019/10/12/flattening-typescript-union-types.html
 // Flattens two union types into a single type with optional values
@@ -32,9 +38,8 @@ export type UnionFuncFix<F extends (arg: any) => any> = (value: FirstArgument<F>
 export type FlattenUnion<T> = {
   [K in keyof UnionToIntersection<T>]: K extends keyof T
     ? T[K] extends unknown[]
-      ? T[K]
-      : // eslint-disable-next-line @typescript-eslint/ban-types
-      T[K] extends object
+      ? T[K] // eslint-disable-next-line @typescript-eslint/ban-types
+      : T[K] extends object
       ? FlattenUnion<T[K]>
       : T[K]
     : UnionToIntersection<T>[K] | undefined;
@@ -69,10 +74,22 @@ export type Array5<T> = [T, T, T, T, T, ...T[]];
 export type Array6<T> = [T, T, T, T, T, T, ...T[]];
 export type Array7<T> = [T, T, T, T, T, T, T, ...T[]];
 
-export function map<T, U>(arr: Array1<T>, callbackfn: (value: T, index: number) => U): Array1<U>;
-export function map<T, U>(arr: Array2<T>, callbackfn: (value: T, index: number) => U): Array2<U>;
-export function map<T, U>(arr: T[], callbackfn: (value: T, index: number) => U): U[];
-export function map<T, U>(arr: T[], callbackfn: (value: T, index: number) => U): U[] {
+export function map<T, U>(
+  arr: Array1<T>,
+  callbackfn: (value: T, index: number) => U
+): Array1<U>;
+export function map<T, U>(
+  arr: Array2<T>,
+  callbackfn: (value: T, index: number) => U
+): Array2<U>;
+export function map<T, U>(
+  arr: T[],
+  callbackfn: (value: T, index: number) => U
+): U[];
+export function map<T, U>(
+  arr: T[],
+  callbackfn: (value: T, index: number) => U
+): U[] {
   return arr.map(callbackfn);
 }
 
@@ -92,7 +109,10 @@ export function atLeast<T>(n: number, arr: T[]): arr is T[] {
  * @param obj The object the keys of which we want to narrow to
  * @param key The key we want to check if is in the object
  */
-export function isKeyOf<T>(obj: T, key: string | number | symbol): key is keyof T {
+export function isKeyOf<T extends object>(
+  obj: T,
+  key: string | number | symbol
+): key is keyof T {
   return key in obj;
 }
 
@@ -116,7 +136,9 @@ export function excactly<T>(length: number, arr: T[]): arr is T[] {
  *
  * @param value A value that may or may not be null/undefined
  */
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+export function notEmpty<TValue>(
+  value: TValue | null | undefined
+): value is TValue {
   return value !== null && value !== undefined;
 }
 
@@ -190,7 +212,10 @@ export function last<T>(arr: T[]): T | undefined {
  * @param arr Array with some values
  * @param pred The predicate
  */
-export function split<T>(arr: T[], pred: (elem: T, index: number) => boolean): { good: T[]; bad: T[] } {
+export function split<T>(
+  arr: T[],
+  pred: (elem: T, index: number) => boolean
+): { good: T[]; bad: T[] } {
   const good = arr.filter((elem, index) => pred(elem, index));
   const bad = arr.filter((elem, index) => !pred(elem, index));
 
@@ -213,11 +238,26 @@ export function promiseAll<T>(promises: Promise<T>[]): Promise<T[]> {
 /**
  * Wrapper over `Promise.all(array.map(callback))` that maintains the guarantees of the array
  */
-export function mapAll<T, B>(arr: Array3<T>, callback: (value: T, index: number) => Promise<B>): Promise<Array3<B>>;
-export function mapAll<T, B>(arr: Array2<T>, callback: (value: T, index: number) => Promise<B>): Promise<Array2<B>>;
-export function mapAll<T, B>(arr: Array1<T>, callback: (value: T, index: number) => Promise<B>): Promise<Array1<B>>;
-export function mapAll<T, B>(arr: T[], callback: (value: T, index: number) => Promise<B>): Promise<B[]>;
-export function mapAll<T, B>(arr: T[], callback: (value: T, index: number) => Promise<B>): Promise<B[]> {
+export function mapAll<T, B>(
+  arr: Array3<T>,
+  callback: (value: T, index: number) => Promise<B>
+): Promise<Array3<B>>;
+export function mapAll<T, B>(
+  arr: Array2<T>,
+  callback: (value: T, index: number) => Promise<B>
+): Promise<Array2<B>>;
+export function mapAll<T, B>(
+  arr: Array1<T>,
+  callback: (value: T, index: number) => Promise<B>
+): Promise<Array1<B>>;
+export function mapAll<T, B>(
+  arr: T[],
+  callback: (value: T, index: number) => Promise<B>
+): Promise<B[]>;
+export function mapAll<T, B>(
+  arr: T[],
+  callback: (value: T, index: number) => Promise<B>
+): Promise<B[]> {
   return Promise.all(arr.map(callback));
 }
 
@@ -246,7 +286,12 @@ export function reverse<T>(arr: T[]): T[] {
  * @param count
  * @param values
  */
-export function immutableSplice<T>(array: T[], start: number, count: number, ...values: T[]): T[] {
+export function immutableSplice<T>(
+  array: T[],
+  start: number,
+  count: number,
+  ...values: T[]
+): T[] {
   const newArr = [...array];
   newArr.splice(start, count, ...values);
   return newArr;
@@ -259,7 +304,7 @@ export function immutableSplice<T>(array: T[], start: number, count: number, ...
  */
 export function objKeys<T>(value: T): (keyof T)[] {
   // @ts-expect-error This is expected
-  return Object.keys(value) 
+  return Object.keys(value);
 }
 
 /**
@@ -293,100 +338,3 @@ export function includes<T>(arr: T[], value: unknown): value is T {
   // @ts-ignore
   return arr.includes(value);
 }
-
-
-
-/////////////
-type Range1 = 1
-type Range2 = 1 | 2
-type Range3 = 1 | 2 | 3
-type Range4 = 1 | 2 | 3 | 4
-type Range5 = 1 | 2 | 3 | 4 | 5
-type Range6 = 1 | 2 | 3 | 4 | 5 | 6
-type Range7 = 1 | 2 | 3 | 4 | 5 | 6 | 7
-type Range8 = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
-
-
-function isRangeUntil(until: 1, num: number): num is 1
-function isRangeUntil(until: 2, num: number): num is 1 | 2
-function isRangeUntil(until: 3, num: number): num is 1 | 2 | 3
-function isRangeUntil(until: 4, num: number): num is 1 | 2 | 3 | 4
-function isRangeUntil(until: 5, num: number): num is 1 | 2 | 3 | 4 | 5
-function isRangeUntil(until: 6, num: number): num is 1 | 2 | 3 | 4 | 5 | 6
-function isRangeUntil(until: 7, num: number): num is 1 | 2 | 3 | 4 | 5 | 6 | 7
-function isRangeUntil(until: 8, num: number): num is 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
-function isRangeUntil(until: number, num: number): boolean {
-  return num >= 1 && num <= until
-}
-
-function getNum():number {
-  return 8 
-}
-
-const data = getNum()
-
-type MyObj = {
-  [K in Range7 as `day${K}`]: string
-} & {
-
-  name: 'Valera' | 'Nicu';
-}
-
-
-function test(): MyObj {
-  // @ts-expect-error
-  return {}
-}
-
-let tttt = test();
-
-
-const obj = {
-  // write something
-  name: 'Valera',
-  day1: 'Monday',
-  day2: 'Tuesday',
-}
-
-Object.keys(obj).forEach(key => {
-   const data = obj[key];
-})
-
-objKeys(obj).forEach(key => {
-   const data = obj[key];
-})
-
-const arr: string[] = [1, 2, 3]
-
-getUserIds([])
-getUserIds(['asdf'])
-
-if (atLeast(1, arr))
-    getUserIds(arr)
-
-function getUserIds(ids: Array1<string>) {
-  console.log(ids);
-}
-
-if (isRangeUntil(2, data)) {
-  const asdf = `day${data}` as const
-
-  tttt[`day${data}`] = 'asdf';
-}
-
-
-
-
-type MAXIMUM_ALLOWED_BOUNDARY = 999
-
-type ComputeRange<
-    N extends number,
-    Result extends Array<unknown> = [],
-    > =
-    (Result['length'] extends N
-        ? Result
-        : ComputeRange<N, [...Result, Result['length']]>
-    )
-
-
-type Test = ComputeRange<999>
