@@ -15,7 +15,7 @@
 
   "publish": {
     "exclude": [
-      "*.test.ts",
+      "test",
       ".vscode",
       ".gitignore"
     ]
