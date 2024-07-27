@@ -16,8 +16,7 @@ export type SecondArgument<T extends (first: any, second: any, ...args: any[]) =
   first: any,
   second: infer R,
   ...args: any[]
-) => any
-  ? R
+) => any ? R
   : never
 
 /**
@@ -30,12 +29,9 @@ export type UnionFuncFix<F extends (arg: any) => any> = (value: FirstArgument<F>
 // Flattens two union types into a single type with optional values
 // i.e. FlattenUnion<{ a: number, c: number } | { b: string, c: number }> = { a?: number, b?: string, c: number }
 export type FlattenUnion<T> = {
-  [K in keyof UnionToIntersection<T>]: K extends keyof T
-    ? T[K] extends unknown[]
-      ? T[K] // eslint-disable-next-line @typescript-eslint/ban-types
-      : T[K] extends object
-      ? FlattenUnion<T[K]>
-      : T[K]
+  [K in keyof UnionToIntersection<T>]: K extends keyof T ? T[K] extends unknown[] ? T[K] // eslint-disable-next-line @typescript-eslint/ban-types
+    : T[K] extends object ? FlattenUnion<T[K]>
+    : T[K]
     : UnionToIntersection<T>[K] | undefined
 }
 
@@ -44,20 +40,13 @@ export type FlattenUnion<T> = {
  *
  * Not sure if it provides any advantages
  */
-export type ArrayN<N extends number, T> = N extends 1
-  ? [T, ...T[]]
-  : N extends 2
-  ? [T, T, ...T[]]
-  : N extends 3
-  ? [T, T, T, ...T[]]
-  : N extends 4
-  ? [T, T, T, T, ...T[]]
-  : N extends 5
-  ? [T, T, T, T, T, ...T[]]
-  : N extends 6
-  ? [T, T, T, T, T, T, ...T[]]
-  : N extends 7
-  ? [T, T, T, T, T, T, T, ...T[]]
+export type ArrayN<N extends number, T> = N extends 1 ? [T, ...T[]]
+  : N extends 2 ? [T, T, ...T[]]
+  : N extends 3 ? [T, T, T, ...T[]]
+  : N extends 4 ? [T, T, T, T, ...T[]]
+  : N extends 5 ? [T, T, T, T, T, ...T[]]
+  : N extends 6 ? [T, T, T, T, T, T, ...T[]]
+  : N extends 7 ? [T, T, T, T, T, T, T, ...T[]]
   : T[]
 
 export type Array1<T> = [T, ...T[]]
@@ -261,7 +250,7 @@ export function unreachable(v: never): never {
   return v
 }
 
-export function promiseTimeout(millis: number) {
+export function promiseTimeout(millis: number): Promise<undefined> {
   return new Promise<undefined>((resolve, reject) => {
     try {
       setTimeout(resolve, millis)
@@ -281,7 +270,7 @@ export function promiseTimeout(millis: number) {
 export function includes<TArr extends readonly unknown[]>(
   //
   arr: TArr,
-  value: unknown
+  value: unknown,
 ): value is TArr[number] {
   // @ts-ignore
   return arr.includes(value)
