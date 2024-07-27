@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "test": "deno test"
+  },
+
+  "fmt": {
+    // no ";" at the end of the line
+    "semiColons": false,
+    "lineWidth": 120,
+    "singleQuote": true
+  }
+}
