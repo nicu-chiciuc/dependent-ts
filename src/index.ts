@@ -1,104 +1,95 @@
-export * from './object';
+export * from './object.ts'
 
 // https://stackoverflow.com/a/50375286/2659549
 export type UnionToIntersection<U> = (
   U extends any ? (k: U) => void : never
-) extends (k: infer I) => void
+) extends (k: infer I) => void //
   ? I
-  : never;
+  : never
 
-export type UnpackPromise<T> = T extends Promise<infer U> ? U : T;
+export type UnpackPromise<T> = T extends Promise<infer U> ? U : T
 
 /**
  * Use this instead of {}. It seems that {} causes problems especially when used in generics.
  */
-export type EmptyObject = Record<string, unknown>;
+export type EmptyObject = Record<string, unknown>
 
 export type Arguments<T extends (...args: unknown[]) => unknown> = T extends (
   ...args: infer R
-) => unknown
+) => unknown //
   ? R
-  : never;
-export type FirstArgument<T extends (arg: any, ...args: any[]) => any> =
-  T extends (val: infer R, ...args: any[]) => any ? R : never;
+  : never
+export type FirstArgument<T extends (arg: any, ...args: any[]) => any> = T extends (val: infer R, ...args: any[]) => any
+  ? R
+  : never
 export type SecondArgument<
-  T extends (first: any, second: any, ...args: any[]) => any
-> = T extends (first: any, second: infer R, ...args: any[]) => any ? R : never;
+  T extends (first: any, second: any, ...args: any[]) => any,
+> = T extends (first: any, second: infer R, ...args: any[]) => any ? R : never
 
 /**
  * Given a function of type `(v: A) => Ap | (v: B) => Bp`
  * transform it's type into `(v: A | B) => Ap | Bp`
  */
 export type UnionFuncFix<F extends (arg: any) => any> = (
-  value: FirstArgument<F>
-) => ReturnType<F>;
+  value: FirstArgument<F>,
+) => ReturnType<F>
 
 // https://www.roryba.in/programming/2019/10/12/flattening-typescript-union-types.html
 // Flattens two union types into a single type with optional values
 // i.e. FlattenUnion<{ a: number, c: number } | { b: string, c: number }> = { a?: number, b?: string, c: number }
 export type FlattenUnion<T> = {
-  [K in keyof UnionToIntersection<T>]: K extends keyof T
-    ? T[K] extends unknown[]
-      ? T[K] // eslint-disable-next-line @typescript-eslint/ban-types
-      : T[K] extends object
-      ? FlattenUnion<T[K]>
-      : T[K]
-    : UnionToIntersection<T>[K] | undefined;
-};
+  [K in keyof UnionToIntersection<T>]: K extends keyof T ? T[K] extends unknown[] ? T[K] // eslint-disable-next-line @typescript-eslint/ban-types
+    : T[K] extends object ? FlattenUnion<T[K]>
+    : T[K]
+    : UnionToIntersection<T>[K] | undefined
+}
 
 /**
  * Different implementation of Array1/Array2/...
  *
  * Not sure if it provides any advantages
  */
-export type ArrayN<N extends number, T> = N extends 1
-  ? [T, ...T[]]
-  : N extends 2
-  ? [T, T, ...T[]]
-  : N extends 3
-  ? [T, T, T, ...T[]]
-  : N extends 4
-  ? [T, T, T, T, ...T[]]
-  : N extends 5
-  ? [T, T, T, T, T, ...T[]]
-  : N extends 6
-  ? [T, T, T, T, T, T, ...T[]]
-  : N extends 7
-  ? [T, T, T, T, T, T, T, ...T[]]
-  : T[];
+export type ArrayN<N extends number, T> = N extends 1 ? [T, ...T[]]
+  : N extends 2 ? [T, T, ...T[]]
+  : N extends 3 ? [T, T, T, ...T[]]
+  : N extends 4 ? [T, T, T, T, ...T[]]
+  : N extends 5 ? [T, T, T, T, T, ...T[]]
+  : N extends 6 ? [T, T, T, T, T, T, ...T[]]
+  : N extends 7 ? [T, T, T, T, T, T, T, ...T[]]
+  : T[]
 
-export type Array1<T> = [T, ...T[]];
-export type Array2<T> = [T, T, ...T[]];
-export type Array3<T> = [T, T, T, ...T[]];
-export type Array4<T> = [T, T, T, T, ...T[]];
-export type Array5<T> = [T, T, T, T, T, ...T[]];
-export type Array6<T> = [T, T, T, T, T, T, ...T[]];
-export type Array7<T> = [T, T, T, T, T, T, T, ...T[]];
+export type Array1<T> = [T, ...T[]]
+export type Array2<T> = [T, T, ...T[]]
+export type Array3<T> = [T, T, T, ...T[]]
+export type Array4<T> = [T, T, T, T, ...T[]]
+export type Array5<T> = [T, T, T, T, T, ...T[]]
+export type Array6<T> = [T, T, T, T, T, T, ...T[]]
+export type Array7<T> = [T, T, T, T, T, T, T, ...T[]]
 
 export function map<T, U>(
   arr: Array1<T>,
-  callbackfn: (value: T, index: number) => U
-): Array1<U>;
+  callbackfn: (value: T, index: number) => U,
+): Array1<U>
 export function map<T, U>(
   arr: Array2<T>,
-  callbackfn: (value: T, index: number) => U
-): Array2<U>;
+  callbackfn: (value: T, index: number) => U,
+): Array2<U>
 export function map<T, U>(
   arr: T[],
-  callbackfn: (value: T, index: number) => U
-): U[];
+  callbackfn: (value: T, index: number) => U,
+): U[]
 export function map<T, U>(
   arr: T[],
-  callbackfn: (value: T, index: number) => U
+  callbackfn: (value: T, index: number) => U,
 ): U[] {
-  return arr.map(callbackfn);
+  return arr.map(callbackfn)
 }
 
-export function atLeast<T>(n: 1, arr: T[]): arr is Array1<T>;
-export function atLeast<T>(n: 2, arr: T[]): arr is Array2<T>;
-export function atLeast<T>(n: 3, arr: T[]): arr is Array3<T>;
+export function atLeast<T>(n: 1, arr: T[]): arr is Array1<T>
+export function atLeast<T>(n: 2, arr: T[]): arr is Array2<T>
+export function atLeast<T>(n: 3, arr: T[]): arr is Array3<T>
 export function atLeast<T>(n: number, arr: T[]): arr is T[] {
-  return arr.length >= n;
+  return arr.length >= n
 }
 
 /**
@@ -112,9 +103,9 @@ export function atLeast<T>(n: number, arr: T[]): arr is T[] {
  */
 export function isKeyOf<T extends object>(
   obj: T,
-  key: string | number | symbol
+  key: string | number | symbol,
 ): key is keyof T {
-  return key in obj;
+  return key in obj
 }
 
 /**
@@ -123,11 +114,11 @@ export function isKeyOf<T extends object>(
  * @param length The expected length of the array
  * @param arr The array the length of which we test
  */
-export function excactly<T>(length: 1, arr: T[]): arr is [T];
-export function excactly<T>(length: 2, arr: T[]): arr is [T, T];
-export function excactly<T>(length: 3, arr: T[]): arr is [T, T, T];
+export function excactly<T>(length: 1, arr: T[]): arr is [T]
+export function excactly<T>(length: 2, arr: T[]): arr is [T, T]
+export function excactly<T>(length: 3, arr: T[]): arr is [T, T, T]
 export function excactly<T>(length: number, arr: T[]): arr is T[] {
-  return arr.length === length;
+  return arr.length === length
 }
 
 /**
@@ -138,16 +129,16 @@ export function excactly<T>(length: number, arr: T[]): arr is T[] {
  * @param value A value that may or may not be null/undefined
  */
 export function notEmpty<TValue>(
-  value: TValue | null | undefined
+  value: TValue | null | undefined,
 ): value is TValue {
-  return value !== null && value !== undefined;
+  return value !== null && value !== undefined
 }
 
 export function atMod<T>(arr: Array1<T>, indexMod: number): T {
-  const len = arr.length;
-  const elem = arr[(indexMod + len) % len];
+  const len = arr.length
+  const elem = arr[(indexMod + len) % len]
 
-  return elem ?? arr[0];
+  return elem ?? arr[0]
 }
 
 // TODO: Write this better
@@ -176,22 +167,22 @@ export function atMod<T>(arr: Array1<T>, indexMod: number): T {
 
 // Maybe rewrite this more beautifully
 export function zip<T, B>(arrT: Array1<T>, arrB: Array1<B>): Array1<[T, B]> {
-  const first: [T, B] = [arrT[0], arrB[0]];
+  const first: [T, B] = [arrT[0], arrB[0]]
 
   const rest = map(arrT, (tVal, index) => {
     // First element was already extracted
-    if (index === 0) return null;
+    if (index === 0) return null
 
-    const bVal = arrB[index];
+    const bVal = arrB[index]
 
-    if (!bVal) return null;
+    if (!bVal) return null
 
-    const tup: [T, B] = [tVal, bVal];
+    const tup: [T, B] = [tVal, bVal]
 
-    return tup;
-  }).filter(notEmpty);
+    return tup
+  }).filter(notEmpty)
 
-  return [first, ...rest];
+  return [first, ...rest]
 }
 
 /**
@@ -201,10 +192,10 @@ export function zip<T, B>(arrT: Array1<T>, arrB: Array1<B>): Array1<[T, B]> {
  *
  * @param arr An array of elements
  */
-export function last<T>(arr: Array1<T>): T;
-export function last<T>(arr: T[]): T | undefined;
+export function last<T>(arr: Array1<T>): T
+export function last<T>(arr: T[]): T | undefined
 export function last<T>(arr: T[]): T | undefined {
-  return arr[arr.length - 1];
+  return arr[arr.length - 1]
 }
 
 /**
@@ -215,12 +206,12 @@ export function last<T>(arr: T[]): T | undefined {
  */
 export function split<T>(
   arr: T[],
-  pred: (elem: T, index: number) => boolean
+  pred: (elem: T, index: number) => boolean,
 ): { good: T[]; bad: T[] } {
-  const good = arr.filter((elem, index) => pred(elem, index));
-  const bad = arr.filter((elem, index) => !pred(elem, index));
+  const good = arr.filter((elem, index) => pred(elem, index))
+  const bad = arr.filter((elem, index) => !pred(elem, index))
 
-  return { good, bad };
+  return { good, bad }
 }
 
 /**
@@ -228,12 +219,12 @@ export function split<T>(
  *
  * @param promises A list of promises
  */
-export function promiseAll<T>(promises: Array3<Promise<T>>): Promise<Array3<T>>;
-export function promiseAll<T>(promises: Array2<Promise<T>>): Promise<Array2<T>>;
-export function promiseAll<T>(promises: Array1<Promise<T>>): Promise<Array1<T>>;
-export function promiseAll<T>(promises: Promise<T>[]): Promise<T[]>;
+export function promiseAll<T>(promises: Array3<Promise<T>>): Promise<Array3<T>>
+export function promiseAll<T>(promises: Array2<Promise<T>>): Promise<Array2<T>>
+export function promiseAll<T>(promises: Array1<Promise<T>>): Promise<Array1<T>>
+export function promiseAll<T>(promises: Promise<T>[]): Promise<T[]>
 export function promiseAll<T>(promises: Promise<T>[]): Promise<T[]> {
-  return Promise.all(promises);
+  return Promise.all(promises)
 }
 
 /**
@@ -241,25 +232,25 @@ export function promiseAll<T>(promises: Promise<T>[]): Promise<T[]> {
  */
 export function mapAll<T, B>(
   arr: Array3<T>,
-  callback: (value: T, index: number) => Promise<B>
-): Promise<Array3<B>>;
+  callback: (value: T, index: number) => Promise<B>,
+): Promise<Array3<B>>
 export function mapAll<T, B>(
   arr: Array2<T>,
-  callback: (value: T, index: number) => Promise<B>
-): Promise<Array2<B>>;
+  callback: (value: T, index: number) => Promise<B>,
+): Promise<Array2<B>>
 export function mapAll<T, B>(
   arr: Array1<T>,
-  callback: (value: T, index: number) => Promise<B>
-): Promise<Array1<B>>;
+  callback: (value: T, index: number) => Promise<B>,
+): Promise<Array1<B>>
 export function mapAll<T, B>(
   arr: T[],
-  callback: (value: T, index: number) => Promise<B>
-): Promise<B[]>;
+  callback: (value: T, index: number) => Promise<B>,
+): Promise<B[]>
 export function mapAll<T, B>(
   arr: T[],
-  callback: (value: T, index: number) => Promise<B>
+  callback: (value: T, index: number) => Promise<B>,
 ): Promise<B[]> {
-  return Promise.all(arr.map(callback));
+  return Promise.all(arr.map(callback))
 }
 
 /**
@@ -267,16 +258,16 @@ export function mapAll<T, B>(
  *
  * @param arr The array to reverse
  */
-export function reverse<T>(arr: Array3<T>): Array3<T>;
-export function reverse<T>(arr: Array2<T>): Array2<T>;
-export function reverse<T>(arr: Array1<T>): Array1<T>;
-export function reverse<T>(arr: Array1<T>): Array1<T>;
+export function reverse<T>(arr: Array3<T>): Array3<T>
+export function reverse<T>(arr: Array2<T>): Array2<T>
+export function reverse<T>(arr: Array1<T>): Array1<T>
+export function reverse<T>(arr: Array1<T>): Array1<T>
 export function reverse<T>(arr: T[]): T[] {
-  const tempArr = [...arr];
+  const tempArr = [...arr]
 
-  tempArr.reverse();
+  tempArr.reverse()
 
-  return tempArr;
+  return tempArr
 }
 
 /**
@@ -293,9 +284,9 @@ export function immutableSplice<T>(
   count: number,
   ...values: T[]
 ): T[] {
-  const newArr = [...array];
-  newArr.splice(start, count, ...values);
-  return newArr;
+  const newArr = [...array]
+  newArr.splice(start, count, ...values)
+  return newArr
 }
 
 /**
@@ -305,17 +296,17 @@ export function immutableSplice<T>(
  * of an enum was not taken into account. See Compose.js setContent() for example
  */
 export function unreachable(v: never): never {
-  return v;
+  return v
 }
 
 export function promiseTimeout(millis: number) {
   return new Promise<undefined>((resolve, reject) => {
     try {
-      setTimeout(resolve, millis);
+      setTimeout(resolve, millis)
     } catch (error) {
-      reject(error);
+      reject(error)
     }
-  });
+  })
 }
 
 /**
@@ -327,5 +318,5 @@ export function promiseTimeout(millis: number) {
  */
 export function includes<T>(arr: T[], value: unknown): value is T {
   // @ts-ignore
-  return arr.includes(value);
+  return arr.includes(value)
 }
