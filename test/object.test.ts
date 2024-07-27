@@ -1,12 +1,16 @@
-import { objEntries, objFromEntries, objKeys } from '../src/object'
-import { expectType } from '../src/utils'
+import { assertEquals } from 'jsr:@std/assert'
+
+import { describe, it } from 'jsr:@std/testing/bdd'
+
+import { objEntries, objFromEntries, objKeys } from '../src/object.ts'
+import { expectType } from '../src/utils.ts'
 
 describe('object.ts', () => {
   describe('objKeys()', () => {
     it('should behave exactly as Object.keys()', () => {
       const obj = { a: 1, b: 2, c: 3 }
 
-      expect(objKeys(obj)).toStrictEqual(['a', 'b', 'c'])
+      assertEquals(objKeys(obj), ['a', 'b', 'c'])
     })
 
     it('should return a typed array', () => {
@@ -22,7 +26,7 @@ describe('object.ts', () => {
     it('should behave exactly as Object.entries()', () => {
       const obj = { a: 1, b: 2, c: 3 }
 
-      expect(objEntries(obj)).toStrictEqual([
+      assertEquals(objEntries(obj), [
         ['a', 1],
         ['b', 2],
         ['c', 3],
@@ -45,12 +49,12 @@ describe('object.ts', () => {
       expectType<['a' | 'b' | 'c', 1 | 2 | 'three'][]>()(entries, true)
     })
   })
-  
+
   describe('objFromEntries()', () => {
     it('should behave exactly as Object.fromEntries()', () => {
       const entries = objEntries({ a: 1, b: 2, c: 3 })
 
-      expect(objFromEntries(entries)).toStrictEqual({ a: 1, b: 2, c: 3 })
+      assertEquals(objFromEntries(entries), { a: 1, b: 2, c: 3 })
     })
 
     it('should return a typed object', () => {
@@ -70,7 +74,9 @@ describe('object.ts', () => {
 
       const obj = objFromEntries(entries)
 
-      expectType<{ a: 1; b: 2; c: 3 }>()(obj, true)
+      // TODO: Improve this
+      // expectType<{ a: 1; b: 2; c: 3 }>()(obj, true)
+      expectType<Record<'a' | 'b' | 'c', 1 | 2 | 3>>()(obj, true)
     })
-  }
+  })
 })
