@@ -1,6 +1,6 @@
 {
   "name": "@tscu/dependent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "exports": "./src/index.ts",
 
   "tasks": {
@@ -11,5 +11,13 @@
     "semiColons": false,
     "lineWidth": 120,
     "singleQuote": true
+  },
+
+  "publish": {
+    "exclude": [
+      "*.test.ts",
+      ".vscode",
+      ".gitignore"
+    ]
   }
 }
