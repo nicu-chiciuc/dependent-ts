@@ -72,11 +72,11 @@ describe('object.ts', () => {
         ['c', 3],
       ] as const
 
-      // @ts-expect-error todo
       const obj = objFromEntries(entries)
 
-      // @ts-expect-error todo
-      expectType<{ a: 1; b: 2; c: 3 }>()(obj, true)
+      // TODO: Improve this
+      // expectType<{ a: 1; b: 2; c: 3 }>()(obj, true)
+      expectType<Record<'a' | 'b' | 'c', 1 | 2 | 3>>()(obj, true)
     })
   })
 })
